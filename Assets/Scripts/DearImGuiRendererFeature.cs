@@ -6,6 +6,8 @@ using UnityEngine;
 using UnityEngine.LowLevel;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
+using Unity.Collections;
+using Unity.Collections.LowLevel.Unsafe;
 
 using ImGuiNET;
 using ImGui.Unity.Assets;
@@ -13,8 +15,7 @@ using ImGui.Unity.Data;
 using ImGui.Unity.Events;
 using ImGui.Unity.Texture;
 using ImGui.Unity.Extensions;
-using Unity.Collections;
-using Unity.Collections.LowLevel.Unsafe;
+using ImGui.Unity.Input;
 
 namespace ImGui.Unity
 {
@@ -53,6 +54,11 @@ namespace ImGui.Unity
         
         [Header("Custom Shader Properties")]
         [SerializeField] private string textureProperty = "_Texture";
+        
+        [SerializeField] private CursorShapesAsset _cursorShapes;
+        [Tooltip("Null value uses default imgui.ini file.")]
+        [SerializeField] private IniSettingsAsset _iniSettings;
+        
 
         private DearImGuiPass _dearImGuiPass;
         
@@ -61,6 +67,7 @@ namespace ImGui.Unity
 
         private IntPtr _imGuiContext;
         private TextureManager _textureManager;
+        private IInputSource _inputSource;
         
         // Skip all checks and validation when updating the mesh.
         private const MeshUpdateFlags NoMeshChecks = MeshUpdateFlags.DontNotifyMeshUsers |
@@ -117,8 +124,10 @@ namespace ImGui.Unity
                 _initialConfiguration.ApplyTo(io);
                 _style?.ApplyTo(ImGuiNET.ImGui.GetStyle());
 
-                //IPlatform platform = PlatformUtility.Create(_platformType, _cursorShapes, _iniSettings);
-                //SetPlatform(platform, io);
+                IInputSource inputSource = InputUtility.Create(_cursorShapes, _iniSettings);
+                _inputSource?.Shutdown(io);
+                _inputSource = inputSource;
+                _inputSource?.Initialize(io, _initialConfiguration, "Unity " + _inputSource);
             }
 
             _dearImGuiPass = new DearImGuiPass
@@ -162,7 +171,7 @@ namespace ImGui.Unity
             ImGuiIOPtr io = ImGuiNET.ImGui.GetIO();
             
             _textureManager.PrepareFrame(io);
-            //_platform.PrepareFrame(io);
+            _inputSource.PrepareFrame(io);
             
             // Time.unscaledDeltaTime can be 0 in rare occasions. For example, when using the Frame Debugger.
             io.DeltaTime = Mathf.Max(Time.unscaledDeltaTime, 0.001f);
@@ -271,7 +280,10 @@ namespace ImGui.Unity
                 PlayerLoop.GetCurrentPlayerLoop()
                           .RemovePlayerLoopSystem(typeof(UnityEngine.PlayerLoop.Update), _ImGuiUpdateLoop);
             }
-            
+
+            _inputSource?.Shutdown(ImGuiNET.ImGui.GetIO());
+            _textureManager?.Shutdown();
+
             if (_imGuiContext != IntPtr.Zero)
             {
                 ImGuiNET.ImGui.DestroyContext();
@@ -279,6 +291,7 @@ namespace ImGui.Unity
             }
 
             CoreUtils.Destroy(_mesh);
+            _mesh = null;
         }
     }
 }
