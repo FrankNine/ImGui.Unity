@@ -65,4 +65,26 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Active: 1
   _material: {fileID: 2100000, guid: 6acce1226daca1e46899dc3fadd63540, type: 2}
-  RenderPassEvent: 400
+  _renderPassEvent: 600
+  _fontCustomInitializer:
+    m_PersistentCalls:
+      m_Calls: []
+  _fontAtlasConfiguration: {fileID: 11400000, guid: 3f00f454df6d8f2449b9c7de84fddf7c, type: 2}
+  _initialConfiguration:
+    ImGuiConfig: 129
+    DoubleClickTime: 0.3
+    DoubleClickMaxDist: 6
+    DragThreshold: 6
+    KeyRepeatDelay: 0.25
+    KeyRepeatRate: 0.05
+    FontGlobalScale: 1
+    FontAllowUserScaling: 0
+    MouseDrawCursor: 0
+    TextCursorBlink: 0
+    ResizeFromEdges: 1
+    MoveFromTitleOnly: 1
+    ConfigMemoryCompactTimer: 1
+    ConfigDockingNoSplit: 0
+    ConfigDockingAlwaysTabBar: 0
+    ConfigDockingTransparentPayload: 0
+  _style: {fileID: 11400000, guid: db3ee8d3354ae204db843ea35b0fbd60, type: 2}
