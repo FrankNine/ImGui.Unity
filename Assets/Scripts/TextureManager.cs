@@ -12,6 +12,7 @@ using ImGui.Unity.Assets;
 using ImGui.Unity.Data;
 using ImGui.Unity.Data.Font;
 using ImGui.Unity.Events;
+using ImGui.Unity.Utilities;
 
 namespace ImGui.Unity.Texture
 {
@@ -62,7 +63,7 @@ namespace ImGui.Unity.Texture
 
             if (_atlasTexture != null)
             {
-                UnityEngine.Object.Destroy(_atlasTexture);
+                UnityUtilities.Destroy(_atlasTexture);
                 _atlasTexture = null;
             }
         }
@@ -172,7 +173,7 @@ namespace ImGui.Unity.Texture
             FreeGlyphRangeArrays();
 
             io.Fonts.Clear(); // Previous FontDefault reference no longer valid.
-            io.NativePtr->FontDefault = default; // NULL uses Fonts[0].
+            io.NativePtr->FontDefault = null; // NULL uses Fonts[0].
         }
 
         private unsafe IntPtr AllocateGlyphRangeArray(in FontConfig fontConfig)
