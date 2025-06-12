@@ -97,9 +97,8 @@ internal class DearImGuiPass : ScriptableRenderPass
                         prevTextureId = drawCmd.TextureId;
 
                         // TODO: Implement ImDrawCmdPtr.GetTexID().
-                        bool hasTexture = textureManager.TryGetTexture(prevTextureId, out UnityEngine.Texture texture);
-                        Assert.IsTrue(hasTexture,
-                            $"Texture {prevTextureId} does not exist. Try to use UImGuiUtility.GetTextureID().");
+                        bool hasTexture = textureManager.TryGetTexture(prevTextureId, out Texture texture);
+                        Assert.IsTrue(hasTexture, "Texture does not exist. Try to use UImGuiUtility.GetTextureID().");
 
                         data.MaterialPropertyBlock.SetTexture(data.TextureID, texture);
                     }

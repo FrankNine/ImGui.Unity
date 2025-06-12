@@ -226,7 +226,15 @@ namespace ImGui.Unity
             //  Upload data into mesh.
             int vtxOf = 0;
             int idxOf = 0;
-            var subMeshDescriptorList = new List<SubMeshDescriptor>();
+
+            int subMeshDescriptorSize = 0;
+            for (int n = 0; n < drawDataPtr.CmdListsCount; n++)
+            {
+                ImDrawListPtr drawList = drawDataPtr.CmdLists[n];
+                subMeshDescriptorSize += drawList.CmdBuffer.Size; 
+            }
+            var subMeshDescriptorArray = new NativeArray<SubMeshDescriptor>(subMeshDescriptorSize, Allocator.Temp);
+            int subMeshDescriptorIndex = 0;
             for (int n = 0; n < drawDataPtr.CmdListsCount; n++)
             {
                 ImDrawListPtr drawList = drawDataPtr.CmdLists[n];
@@ -260,7 +268,8 @@ namespace ImGui.Unity
                             indexCount = (int)cmd.ElemCount,
                             baseVertex = vtxOf + (int)cmd.VtxOffset,
                         };
-                        subMeshDescriptorList.Add(descriptor);
+                        subMeshDescriptorArray[subMeshDescriptorIndex] = descriptor;
+                        subMeshDescriptorIndex++;
                     }
 
                     vtxOf += vtxArray.Length;
@@ -268,7 +277,7 @@ namespace ImGui.Unity
                 }
             }
             
-            mesh.SetSubMeshes(subMeshDescriptorList, NoMeshChecks);
+            mesh.SetSubMeshes(subMeshDescriptorArray, NoMeshChecks);
             mesh.UploadMeshData(false);
         }
         
