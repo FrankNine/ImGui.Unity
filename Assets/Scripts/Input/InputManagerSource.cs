@@ -19,15 +19,13 @@ namespace ImGui.Unity.Input
     /// <summary>
     /// Input bindings for ImGui in Unity in charge of: mouse/keyboard/gamepad inputs, cursor shape, timing, windowing.
     /// </summary>
-    internal sealed class InputManagerPlatform : InputSourceBase 
+    internal sealed class InputManagerSource : InputSourceBase 
     {
         private readonly Event _textInputEvent = new Event();
         private readonly KeyCode[] _keyCodes = (KeyCode[])System.Enum.GetValues(typeof(KeyCode));
 
-        public InputManagerPlatform(CursorShapesAsset cursorShapes, IniSettingsAsset iniSettings) :
-            base(cursorShapes, iniSettings)
-        {
-        }
+        public InputManagerSource(CursorShapesAsset cursorShapes, IniSettingsAsset iniSettings) :
+            base(cursorShapes, iniSettings) { }
 
         public override bool Initialize(ImGuiIOPtr io, UIOConfig config, string platformName)
         {

@@ -88,3 +88,7 @@ MonoBehaviour:
     ConfigDockingAlwaysTabBar: 0
     ConfigDockingTransparentPayload: 0
   _style: {fileID: 11400000, guid: db3ee8d3354ae204db843ea35b0fbd60, type: 2}
+  textureProperty: _Texture
+  _cursorShapes: {fileID: 0}
+  _iniSettings: {fileID: 0}
+  _inputSourceType: 1

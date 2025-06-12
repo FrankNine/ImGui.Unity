@@ -58,6 +58,8 @@ namespace ImGui.Unity
         [SerializeField] private CursorShapesAsset _cursorShapes;
         [Tooltip("Null value uses default imgui.ini file.")]
         [SerializeField] private IniSettingsAsset _iniSettings;
+
+        [SerializeField] private InputSourceType _inputSourceType;
         
 
         private DearImGuiPass _dearImGuiPass;
@@ -124,7 +126,7 @@ namespace ImGui.Unity
                 _initialConfiguration.ApplyTo(io);
                 _style?.ApplyTo(ImGuiNET.ImGui.GetStyle());
 
-                IInputSource inputSource = InputUtility.Create(_cursorShapes, _iniSettings);
+                IInputSource inputSource = InputUtility.Create(_inputSourceType, _cursorShapes, _iniSettings);
                 _inputSource?.Shutdown(io);
                 _inputSource = inputSource;
                 _inputSource?.Initialize(io, _initialConfiguration, "Unity " + _inputSource);
