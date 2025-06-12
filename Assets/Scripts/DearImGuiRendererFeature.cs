@@ -109,6 +109,8 @@ namespace ImGui.Unity
                 _imGuiContext = ImGuiNET.ImGui.CreateContext();
                 
                 ImGuiIOPtr io = ImGuiNET.ImGui.GetIO();
+                // Disable writing ini file
+                unsafe { io.NativePtr->IniFilename = null; }
 
                 // Supports ImDrawCmd::VtxOffset to output large meshes while still using 16-bits indices.
                 io.BackendFlags |= ImGuiBackendFlags.RendererHasVtxOffset;
