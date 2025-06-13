@@ -1,5 +1,46 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-2504362577630271591
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d7e293966fc21d24fa4815a172a64bc6, type: 3}
+  m_Name: DearImGuiRendererFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  _material: {fileID: 2100000, guid: 6acce1226daca1e46899dc3fadd63540, type: 2}
+  _renderPassEvent: 600
+  _fontCustomInitializer:
+    m_PersistentCalls:
+      m_Calls: []
+  _fontAtlasConfiguration: {fileID: 11400000, guid: ef843e4dc65cd2e49862108af030fbf3, type: 2}
+  _initialConfiguration:
+    ImGuiConfig: 129
+    DoubleClickTime: 0.3
+    DoubleClickMaxDist: 6
+    DragThreshold: 6
+    KeyRepeatDelay: 0.25
+    KeyRepeatRate: 0.05
+    FontGlobalScale: 1
+    FontAllowUserScaling: 0
+    MouseDrawCursor: 0
+    TextCursorBlink: 0
+    ResizeFromEdges: 1
+    MoveFromTitleOnly: 1
+    ConfigMemoryCompactTimer: 1
+    ConfigDockingNoSplit: 0
+    ConfigDockingAlwaysTabBar: 0
+    ConfigDockingTransparentPayload: 0
+  _style: {fileID: 11400000, guid: 76509175f11bf9549baf069aaf8987b0, type: 2}
+  textureProperty: _Texture
+  _cursorShapes: {fileID: 0}
+  _iniSettings: {fileID: 0}
+  _inputSourceType: 0
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25,8 +66,8 @@ MonoBehaviour:
     probeSamplingDebugTexture: {fileID: 0}
     probeVolumeBlendStatesCS: {fileID: 0}
   m_RendererFeatures:
-  - {fileID: 3890131517925126756}
-  m_RendererFeatureMap: 64727a370186fc35
+  - {fileID: -2504362577630271591}
+  m_RendererFeatureMap: 99e7901b81b73edd
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   m_AssetVersion: 2
@@ -51,44 +92,3 @@ MonoBehaviour:
   m_DepthTextureFormat: 0
   m_AccurateGbufferNormals: 0
   m_IntermediateTextureMode: 1
---- !u!114 &3890131517925126756
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d7e293966fc21d24fa4815a172a64bc6, type: 3}
-  m_Name: DearImGuiRendererFeature
-  m_EditorClassIdentifier: 
-  m_Active: 1
-  _material: {fileID: 2100000, guid: 6acce1226daca1e46899dc3fadd63540, type: 2}
-  _renderPassEvent: 600
-  _fontCustomInitializer:
-    m_PersistentCalls:
-      m_Calls: []
-  _fontAtlasConfiguration: {fileID: 11400000, guid: 3f00f454df6d8f2449b9c7de84fddf7c, type: 2}
-  _initialConfiguration:
-    ImGuiConfig: 129
-    DoubleClickTime: 0.3
-    DoubleClickMaxDist: 6
-    DragThreshold: 6
-    KeyRepeatDelay: 0.25
-    KeyRepeatRate: 0.05
-    FontGlobalScale: 1
-    FontAllowUserScaling: 0
-    MouseDrawCursor: 0
-    TextCursorBlink: 0
-    ResizeFromEdges: 1
-    MoveFromTitleOnly: 1
-    ConfigMemoryCompactTimer: 1
-    ConfigDockingNoSplit: 0
-    ConfigDockingAlwaysTabBar: 0
-    ConfigDockingTransparentPayload: 0
-  _style: {fileID: 11400000, guid: db3ee8d3354ae204db843ea35b0fbd60, type: 2}
-  textureProperty: _Texture
-  _cursorShapes: {fileID: 0}
-  _iniSettings: {fileID: 0}
-  _inputSourceType: 1

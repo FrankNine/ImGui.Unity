@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.IO;
 using Vector2 = System.Numerics.Vector2;
 
 using UnityEngine;
@@ -306,5 +306,34 @@ namespace ImGui.Unity
             CoreUtils.Destroy(_mesh);
             _mesh = null;
         }
+        
+#if UNITY_EDITOR
+        private const string PACKAGE_PATH = "Packages/com.franknine.imgui.unity/";
+        private void Reset()
+        {
+            if (!_material)
+            {
+                var materialPath = Path.Combine(PACKAGE_PATH, "Runtime/Resources/Materials/DearImGui-Mesh.mat");
+                _material = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(materialPath);
+                UnityEditor.EditorUtility.SetDirty(this);
+            }
+            
+            if (!_fontAtlasConfiguration)
+            {
+                var fontAtlasConfigAssetPath 
+                    = Path.Combine(PACKAGE_PATH, "Runtime/DefaultSettings/Default Font Atlas Config Asset.asset");
+                _fontAtlasConfiguration 
+                    = UnityEditor.AssetDatabase.LoadAssetAtPath<FontAtlasConfigAsset>(fontAtlasConfigAssetPath);
+                UnityEditor.EditorUtility.SetDirty(this);
+            }
+
+            if (!_style)
+            {
+                var styleAssetPath = Path.Combine(PACKAGE_PATH, "Runtime/DefaultSettings/Default Style Asset.asset"); 
+                _style = UnityEditor.AssetDatabase.LoadAssetAtPath<StyleAsset>(styleAssetPath); 
+                UnityEditor.EditorUtility.SetDirty(this);
+            }
+        }
+#endif
     }
 }
