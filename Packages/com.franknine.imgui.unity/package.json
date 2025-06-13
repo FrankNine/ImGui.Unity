@@ -1,0 +1,17 @@
+{
+    "name": "com.franknine.imgui.unity",
+    "version": "0.0.1",
+    "displayName": "ImGui.Unity",
+    "description": "Dear ImGui for URP",
+    "unity": "6000.0",
+    "dependencies": {
+        "com.unity.render-pipelines.universal" : "17.0.4"
+    },
+    "samples": [
+        {
+            "displayName": "ImGui.Unity URP Sample",
+            "description": "Contains sample scene with ImGui.Unity in URP setup",
+            "path": "Samples~"
+        }
+    ]
+}

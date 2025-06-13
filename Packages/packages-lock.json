@@ -1,5 +1,13 @@
 {
   "dependencies": {
+    "com.franknine.imgui.unity": {
+      "version": "file:com.franknine.imgui.unity",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.render-pipelines.universal": "17.0.4"
+      }
+    },
     "com.unity.burst": {
       "version": "1.8.21",
       "depth": 2,

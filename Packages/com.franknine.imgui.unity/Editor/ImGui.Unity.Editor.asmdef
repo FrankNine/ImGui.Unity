@@ -1,0 +1,18 @@
+{
+    "name": "ImGui.Unity.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:46e2898a17dc3d04d90d71b798934d9d"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
