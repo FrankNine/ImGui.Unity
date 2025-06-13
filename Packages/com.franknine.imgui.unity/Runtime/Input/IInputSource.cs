@@ -8,7 +8,7 @@ namespace ImGui.Unity.Input
     /// </summary>
     internal interface IInputSource
     {
-        bool Initialize(ImGuiIOPtr io, UIOConfig config, string platformName);
+        void Initialize(ImGuiIOPtr io);
         void PrepareFrame(ImGuiIOPtr io);
         void Shutdown(ImGuiIOPtr io);
     }

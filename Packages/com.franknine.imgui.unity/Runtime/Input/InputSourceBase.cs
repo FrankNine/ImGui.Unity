@@ -12,12 +12,12 @@ namespace ImGui.Unity.Input
 {
     internal class InputSourceBase : IInputSource
     {
-        protected readonly IniSettingsAsset _iniSettings;
-        protected readonly CursorShapesAsset _cursorShapes;
+        private readonly IniSettingsAsset _iniSettings;
+        private readonly CursorShapesAsset _cursorShapes;
 
-        protected readonly InputCallbacks _callbacks = new();
+        private readonly InputCallbacks _callbacks = new();
 
-        protected ImGuiMouseCursor _lastCursor = ImGuiMouseCursor.COUNT;
+        private ImGuiMouseCursor _lastCursor = ImGuiMouseCursor.COUNT;
 
         internal InputSourceBase(CursorShapesAsset cursorShapes, IniSettingsAsset iniSettings)
         {
@@ -25,7 +25,7 @@ namespace ImGui.Unity.Input
             _iniSettings = iniSettings;
         }
 
-        public virtual bool Initialize(ImGuiIOPtr io, UIOConfig config, string platformName)
+        public virtual void Initialize(ImGuiIOPtr io)
         {
             var platformIo = ImGuiNET.ImGui.GetPlatformIO();
 
@@ -45,20 +45,21 @@ namespace ImGui.Unity.Input
 
             unsafe
             {
-                InputCallbacks.SetClipboardFunctions(InputCallbacks.GetClipboardTextCallback,
-                    InputCallbacks.SetClipboardTextCallback);
+                InputCallbacks.SetClipboardFunctions
+                (
+                    InputCallbacks.GetClipboardTextCallback,
+                    InputCallbacks.SetClipboardTextCallback
+                );
             }
 
             _callbacks.Assign(io);
             platformIo.Platform_ClipboardUserData = IntPtr.Zero;
 
-            if (_iniSettings != null)
+            if (_iniSettings)
             {
                 io.SetIniFilename(null);
                 ImGuiNET.ImGui.LoadIniSettingsFromMemory(_iniSettings.Load());
             }
-
-            return true;
         }
 
         public virtual void PrepareFrame(ImGuiIOPtr io)
@@ -66,7 +67,7 @@ namespace ImGui.Unity.Input
             Assert.IsTrue(io.Fonts.IsBuilt(),
                 "Font atlas not built! Generally built by the renderer. Missing call to renderer NewFrame() function?");
 
-            if (_iniSettings != null && io.WantSaveIniSettings)
+            if (_iniSettings && io.WantSaveIniSettings)
             {
                 _iniSettings.Save(ImGuiNET.ImGui.SaveIniSettingsToMemory());
                 io.WantSaveIniSettings = false;
@@ -84,9 +85,9 @@ namespace ImGui.Unity.Input
             if ((io.ConfigFlags & ImGuiConfigFlags.NoMouseCursorChange) != 0) return;
 
             _lastCursor = cursor;
-            Cursor.visible =
-                cursor != ImGuiMouseCursor.None; // Hide cursor if ImGui is drawing it or if it wants no cursor.
-            if (_cursorShapes != null)
+            // Hide cursor if ImGui is drawing it or if it wants no cursor.
+            Cursor.visible = cursor != ImGuiMouseCursor.None; 
+            if (_cursorShapes)
             {
                 Cursor.SetCursor(_cursorShapes[cursor].Texture, _cursorShapes[cursor].Hotspot, CursorMode.Auto);
             }

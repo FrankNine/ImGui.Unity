@@ -131,7 +131,7 @@ namespace ImGui.Unity
                 IInputSource inputSource = InputUtility.Create(_inputSourceType, _cursorShapes, _iniSettings);
                 _inputSource?.Shutdown(io);
                 _inputSource = inputSource;
-                _inputSource?.Initialize(io, _initialConfiguration, "Unity " + _inputSource);
+                _inputSource?.Initialize(io);
             }
 
             _dearImGuiPass = new DearImGuiPass

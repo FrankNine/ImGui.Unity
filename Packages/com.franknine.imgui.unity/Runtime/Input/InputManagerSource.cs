@@ -21,36 +21,29 @@ namespace ImGui.Unity.Input
     /// </summary>
     internal sealed class InputManagerSource : InputSourceBase 
     {
-        private readonly Event _textInputEvent = new Event();
+        private readonly Event _textInputEvent = new();
         private readonly KeyCode[] _keyCodes = (KeyCode[])System.Enum.GetValues(typeof(KeyCode));
 
         public InputManagerSource(CursorShapesAsset cursorShapes, IniSettingsAsset iniSettings) :
             base(cursorShapes, iniSettings) { }
 
-        public override bool Initialize(ImGuiIOPtr io, UIOConfig config, string platformName)
-        {
-            base.Initialize(io, config, platformName);
-
-            return true;
-        }
-
         public override void PrepareFrame(ImGuiIOPtr io)
         {
             base.PrepareFrame(io);
 
-            UpdateKeyboard(io);
-            UpdateMouse(io);
+            _UpdateKeyboard(io);
+            _UpdateMouse(io);
             UpdateCursor(io, ImGuiNET.ImGui.GetMouseCursor());
         }
 
-        private void UpdateKeyboard(ImGuiIOPtr io)
+        private void _UpdateKeyboard(ImGuiIOPtr io)
         {
             // BUG: mod key make everything slow. Go to line
             foreach (KeyCode keyCode in _keyCodes)
             {
-                if (TryMapKeys(keyCode, out ImGuiKey imguikey))
+                if (_TryMapKeys(keyCode, out ImGuiKey imGuiKey))
                 {
-                    io.AddKeyEvent(imguikey, UnityEngine.Input.GetKey(keyCode));
+                    io.AddKeyEvent(imGuiKey, UnityEngine.Input.GetKey(keyCode));
                 }
             }
 
@@ -65,7 +58,7 @@ namespace ImGui.Unity.Input
             }
         }
 
-        private static void UpdateMouse(ImGuiIOPtr io)
+        private static void _UpdateMouse(ImGuiIOPtr io)
         {
             Vector2 mousePosition = ImGuiUtilities.ScreenToImGui(UnityEngine.Input.mousePosition);
             io.AddMousePosEvent(mousePosition.x, mousePosition.y);
@@ -75,7 +68,7 @@ namespace ImGui.Unity.Input
             io.AddMouseWheelEvent(UnityEngine.Input.mouseScrollDelta.x, UnityEngine.Input.mouseScrollDelta.y);
         }
 
-        private static bool TryMapKeys(KeyCode key, out ImGuiKey imguikey)
+        private static bool _TryMapKeys(KeyCode key, out ImGuiKey imGuiKey)
         {
             static ImGuiKey KeyToImGuiKeyShortcut(KeyCode keyToConvert, KeyCode startKey1, ImGuiKey startKey2)
             {
@@ -83,11 +76,10 @@ namespace ImGui.Unity.Input
                 return startKey2 + changeFromStart1;
             }
 
-            imguikey = key switch
+            imGuiKey = key switch
             {
                 >= KeyCode.F1 and <= KeyCode.F12 => KeyToImGuiKeyShortcut(key, KeyCode.F1, ImGuiKey.F1),
-                >= KeyCode.Keypad0 and <= KeyCode.Keypad9 => KeyToImGuiKeyShortcut(key, KeyCode.Keypad0,
-                    ImGuiKey.Keypad0),
+                >= KeyCode.Keypad0 and <= KeyCode.Keypad9 => KeyToImGuiKeyShortcut(key, KeyCode.Keypad0, ImGuiKey.Keypad0),
                 >= KeyCode.A and <= KeyCode.Z => KeyToImGuiKeyShortcut(key, KeyCode.A, ImGuiKey.A),
                 >= KeyCode.Alpha0 and <= KeyCode.Alpha9 => KeyToImGuiKeyShortcut(key, KeyCode.Alpha0, ImGuiKey._0),
                 // BUG: mod keys make everything slow. 
@@ -137,7 +129,7 @@ namespace ImGui.Unity.Input
                 _ => ImGuiKey.None
             };
 
-            return imguikey != ImGuiKey.None;
+            return imGuiKey != ImGuiKey.None;
         }
     }
 }

@@ -35,12 +35,9 @@ namespace ImGui.Unity.Input
         public InputSystemSource(CursorShapesAsset cursorShapes, IniSettingsAsset iniSettings)
             : base(cursorShapes, iniSettings) { }
 
-        private static void UpdateMouse(ImGuiIOPtr io, Mouse mouse)
+        private static void _UpdateMouse(ImGuiIOPtr io, Mouse mouse)
         {
-            if (mouse == null)
-            {
-                return;
-            }
+            if (mouse == null) { return; }
 
             // Set Unity mouse position if requested.
             if (io.WantSetMousePos)
@@ -59,9 +56,11 @@ namespace ImGui.Unity.Input
             io.MouseDown[2] = mouse.middleButton.isPressed;
         }
 
-        private static void UpdateGamepad(ImGuiIOPtr io, Gamepad gamepad)
+        private static void _UpdateGamepad(ImGuiIOPtr io, Gamepad gamepad)
         {
-            io.BackendFlags = gamepad == null ? io.BackendFlags & ~ImGuiBackendFlags.HasGamepad : io.BackendFlags | ImGuiBackendFlags.HasGamepad;
+            io.BackendFlags = gamepad == null 
+                ? io.BackendFlags & ~ImGuiBackendFlags.HasGamepad 
+                : io.BackendFlags | ImGuiBackendFlags.HasGamepad;
 
             if (gamepad == null || (io.ConfigFlags & ImGuiConfigFlags.NavEnableGamepad) == 0)
             {
@@ -101,7 +100,7 @@ namespace ImGui.Unity.Input
             io.AddKeyAnalogEvent(ImGuiKey.GamepadR3, gamepad.rightStickButton.IsPressed(), gamepad.rightStickButton.ReadValue());
         }
 
-        private void SetupKeyboard(Keyboard keyboard)
+        private void _SetupKeyboard(Keyboard keyboard)
         {
             if (_keyboard != null)
             {
@@ -115,7 +114,7 @@ namespace ImGui.Unity.Input
             _keyboard.onTextInput += _textInput.Add;
         }
 
-        private void UpdateKeyboard(ImGuiIOPtr io, Keyboard keyboard)
+        private void _UpdateKeyboard(ImGuiIOPtr io, Keyboard keyboard)
         {
             if (keyboard == null)
             {
@@ -126,7 +125,7 @@ namespace ImGui.Unity.Input
             for (int keyIndex = 0; keyIndex < Keyboard.KeyCount; keyIndex++)
             {
                 Key key = (Key)keyIndex;
-                if (TryMapKeys(key, out ImGuiKey imguikey))
+                if (_TryMapKeys(key, out ImGuiKey imguikey))
                 {
                     KeyControl keyControl = keyboard[key];
                     io.AddKeyEvent(imguikey, keyControl.IsPressed());
@@ -147,11 +146,11 @@ namespace ImGui.Unity.Input
             _textInput.Clear();
         }
 
-        private bool TryMapKeys(Key key, out ImGuiKey imguikey)
+        private static bool _TryMapKeys(Key key, out ImGuiKey imguikey)
         {
             static ImGuiKey KeyToImGuiKeyShortcut(Key keyToConvert, Key startKey1, ImGuiKey startKey2)
             {
-                int changeFromStart1 = (int)keyToConvert - (int)startKey1;
+                var changeFromStart1 = (int)keyToConvert - (int)startKey1;
                 return startKey2 + changeFromStart1;
             }
 
@@ -219,22 +218,22 @@ namespace ImGui.Unity.Input
                 // Keyboard layout change, remap main keys.
                 if (change == InputDeviceChange.ConfigurationChanged)
                 {
-                    SetupKeyboard(keyboard);
+                    _SetupKeyboard(keyboard);
                 }
 
                 // Keyboard device changed, setup again.
                 if (Keyboard.current != _keyboard)
                 {
-                    SetupKeyboard(Keyboard.current);
+                    _SetupKeyboard(Keyboard.current);
                 }
             }
         }
 
 #region Overrides of InputSourceBase
-        public override bool Initialize(ImGuiIOPtr io, UIOConfig config, string platformName)
+        public override void Initialize(ImGuiIOPtr io)
         {
             InputSystem.onDeviceChange += OnDeviceChange;
-            base.Initialize(io, config, platformName);
+            base.Initialize(io);
 
             io.BackendFlags |= ImGuiBackendFlags.HasMouseCursors;
 
@@ -247,9 +246,7 @@ namespace ImGui.Unity.Input
                 );
             }
 
-            SetupKeyboard(Keyboard.current);
-
-            return true;
+            _SetupKeyboard(Keyboard.current);
         }
 
         public override void Shutdown(ImGuiIOPtr io)
@@ -264,10 +261,10 @@ namespace ImGui.Unity.Input
 
             try
             {
-                UpdateKeyboard(io, Keyboard.current);
-                UpdateMouse(io, Mouse.current);
+                _UpdateKeyboard(io, Keyboard.current);
+                _UpdateMouse(io, Mouse.current);
                 UpdateCursor(io, ImGuiNET.ImGui.GetMouseCursor());
-                UpdateGamepad(io, Gamepad.current);
+                _UpdateGamepad(io, Gamepad.current);
             }
             catch (Exception e)
             {
