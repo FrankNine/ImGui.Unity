@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 using UnityEngine;
+using Object = UnityEngine.Object;
+using UnityTexture = UnityEngine.Texture;
 using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
-using UTexture = UnityEngine.Texture;
 
 using ImGuiNET;
 using ImGui.Unity.Assets;
@@ -21,8 +22,8 @@ namespace ImGui.Unity.Texture
     {
         private Texture2D _atlasTexture;
 
-        private readonly Dictionary<IntPtr, UTexture> _textures = new();
-        private readonly Dictionary<UTexture, IntPtr> _textureIds = new();
+        private readonly Dictionary<IntPtr, UnityTexture> _textures = new();
+        private readonly Dictionary<UnityTexture, IntPtr> _textureIds = new();
         private readonly Dictionary<Sprite, SpriteInfo> _spriteData = new();
 
         private readonly HashSet<IntPtr> _allocatedGlyphRangeArrays = new();
@@ -58,11 +59,13 @@ namespace ImGui.Unity.Texture
 
         public void Shutdown()
         {
+            Debug.Log("Shut down");
+            
             _textures.Clear();
             _textureIds.Clear();
             _spriteData.Clear();
 
-            if (_atlasTexture != null)
+            if (_atlasTexture)
             {
                 UnityUtilities.Destroy(_atlasTexture);
                 _atlasTexture = null;
@@ -75,15 +78,11 @@ namespace ImGui.Unity.Texture
             io.Fonts.SetTexID(id);
         }
 
-        public bool TryGetTexture(IntPtr id, out UTexture texture)
-        {
-            return _textures.TryGetValue(id, out texture);
-        }
+        public bool TryGetTexture(IntPtr id, out UnityTexture texture) 
+            => _textures.TryGetValue(id, out texture);
 
-        public IntPtr GetTextureId(UTexture texture)
-        {
-            return _textureIds.TryGetValue(texture, out IntPtr id) ? id : RegisterTexture(texture);
-        }
+        public IntPtr GetTextureId(UnityTexture texture) 
+            => _textureIds.TryGetValue(texture, out IntPtr id) ? id : RegisterTexture(texture);
 
         public SpriteInfo GetSpriteInfo(Sprite sprite)
         {
@@ -101,7 +100,7 @@ namespace ImGui.Unity.Texture
             return spriteInfo;
         }
 
-        private IntPtr RegisterTexture(UTexture texture)
+        private IntPtr RegisterTexture(UnityTexture texture)
         {
             IntPtr id = texture.GetNativeTexturePtr();
             _textures[id] = texture;

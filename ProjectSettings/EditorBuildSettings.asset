@@ -4,7 +4,13 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 1
+    path: Assets/Samples/ImGui.Unity/0.0.1/ImGui.Unity URP Sample/Scenes/Sample.unity
+    guid: c4fdfc7baea558f49b5f79c9729bb57d
+  - enabled: 1
+    path: Assets/Samples/ImGui.Unity/0.0.1/ImGui.Unity URP Sample/Scenes/Sample2.unity
+    guid: 1616f5d5426fe434cba2813df2c04188
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: dcf8db80ceba3164496eb697527a852e, type: 3}
   m_UseUCBPForAssetBundles: 0
