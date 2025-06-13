@@ -34,7 +34,8 @@ namespace ImGui.Unity.Texture
 
             _atlasTexture = new Texture2D(width, height, TextureFormat.RGBA32, false, false)
             {
-                filterMode = FilterMode.Point
+                filterMode = FilterMode.Point,
+                hideFlags = HideFlags.HideAndDontSave
             };
 
             // TODO: Remove collections and make native array manually.
