@@ -59,8 +59,6 @@ namespace ImGui.Unity.Texture
 
         public void Shutdown()
         {
-            Debug.Log("Shut down");
-            
             _textures.Clear();
             _textureIds.Clear();
             _spriteData.Clear();

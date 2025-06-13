@@ -152,6 +152,7 @@ namespace ImGui.Unity
         public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)
         {
             if (!_material) return;
+            if (_imGuiContext == IntPtr.Zero) return; 
             
             ImDrawDataPtr drawDataPtr = ImGuiNET.ImGui.GetDrawData();
             unsafe
@@ -170,6 +171,7 @@ namespace ImGui.Unity
 
         private void _ImGuiUpdateLoop()
         {
+            if (_imGuiContext == IntPtr.Zero) return;
             ImGuiNET.ImGui.SetCurrentContext(_imGuiContext);
             
             ImGuiIOPtr io = ImGuiNET.ImGui.GetIO();
