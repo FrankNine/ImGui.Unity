@@ -56,15 +56,42 @@ internal class DearImGuiPass : ScriptableRenderPass
     private static void ExecutePass(PassData data, RasterGraphContext rgContext)
     {
         ImDrawDataPtr drawData = data.DrawDataPtr;
-        var commandBuffer = rgContext.cmd;
-        Vector2 fbSize = (drawData.DisplaySize * drawData.FramebufferScale).ToUnity();
         TextureManager textureManager = data.TextureManager;
 
-        IntPtr prevTextureId = IntPtr.Zero;
-        Vector4 clipOffset = new Vector4(drawData.DisplayPos.X, drawData.DisplayPos.Y,
+        for (int i = 0; i < drawData.Textures.Size; i++)
+        {
+            var texture = drawData.Textures[i];
+
+            if (texture.Status == ImTextureStatus.WantCreate)
+            {
+                var unityTexturePtr = textureManager.Create(texture.Width, texture.Height, texture.Pixels);
+                texture.SetTexID(unityTexturePtr);
+                texture.SetStatus(ImTextureStatus.OK);
+            }
+            else if (texture.Status == ImTextureStatus.WantUpdates)
+            {
+                textureManager.Destroy(texture.GetTexID());
+
+                var unityTexturePtr = textureManager.Create(texture.Width, texture.Height, texture.Pixels);
+                texture.SetTexID(unityTexturePtr);
+                texture.SetStatus(ImTextureStatus.OK);
+            }
+            else if (texture.Status == ImTextureStatus.WantDestroy)
+            {
+                textureManager.Destroy(texture.GetTexID());
+                texture.SetTexID(IntPtr.Zero);
+                texture.SetStatus(ImTextureStatus.Destroyed);
+            }
+        }
+
+        var prevTextureId = IntPtr.Zero;
+        var clipOffset = new Vector4(drawData.DisplayPos.X, drawData.DisplayPos.Y,
             drawData.DisplayPos.X, drawData.DisplayPos.Y);
-        Vector4 clipScale = new Vector4(drawData.FramebufferScale.X, drawData.FramebufferScale.Y,
+        var clipScale = new Vector4(drawData.FramebufferScale.X, drawData.FramebufferScale.Y,
             drawData.FramebufferScale.X, drawData.FramebufferScale.Y);
+
+        var commandBuffer = rgContext.cmd;
+        Vector2 fbSize = (drawData.DisplaySize * drawData.FramebufferScale).ToUnity();
 
         commandBuffer.SetViewport(new Rect(0f, 0f, fbSize.x, fbSize.y));
         commandBuffer.SetViewProjectionMatrices(
@@ -92,13 +119,14 @@ internal class DearImGuiPass : ScriptableRenderPass
 
                     if (clip.x >= fbSize.x || clip.y >= fbSize.y || clip.z < 0f || clip.w < 0f) continue;
 
-                    if (prevTextureId != drawCmd.TextureId)
+                    if (prevTextureId != drawCmd.GetTexID())
                     {
-                        prevTextureId = drawCmd.TextureId;
+                        prevTextureId = drawCmd.GetTexID();
+
 
                         // TODO: Implement ImDrawCmdPtr.GetTexID().
-                        bool hasTexture = textureManager.TryGetTexture(prevTextureId, out Texture texture);
-                        Assert.IsTrue(hasTexture, "Texture does not exist. Try to use UImGuiUtility.GetTextureID().");
+                        bool hasTexture = textureManager.TryGetTexture(prevTextureId, out Texture2D texture);
+                        Assert.IsTrue(hasTexture, "Texture does not exist. Is ImTextureStatus event handled properly?");
 
                         data.MaterialPropertyBlock.SetTexture(data.TextureID, texture);
                     }

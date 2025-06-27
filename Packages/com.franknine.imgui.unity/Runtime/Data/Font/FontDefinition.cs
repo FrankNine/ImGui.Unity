@@ -3,7 +3,7 @@
 namespace ImGui.Unity.Data.Font
 {
     [System.Serializable]
-    internal struct FontDefinition
+    public struct FontDefinition
     {
         [SerializeField] private Object _fontAsset;
 

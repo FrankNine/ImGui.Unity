@@ -64,9 +64,6 @@ namespace ImGui.Unity.Input
 
         public virtual void PrepareFrame(ImGuiIOPtr io)
         {
-            Assert.IsTrue(io.Fonts.IsBuilt(),
-                "Font atlas not built! Generally built by the renderer. Missing call to renderer NewFrame() function?");
-
             if (_iniSettings && io.WantSaveIniSettings)
             {
                 _iniSettings.Save(ImGuiNET.ImGui.SaveIniSettingsToMemory());

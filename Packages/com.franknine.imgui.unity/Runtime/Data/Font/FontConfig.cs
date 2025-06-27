@@ -8,7 +8,7 @@ using ImGui.Unity.Extensions;
 namespace ImGui.Unity.Data.Font
 {
     [System.Serializable]
-    internal struct FontConfig
+    public struct FontConfig
     {
         [Tooltip("TTF/OTF data ownership taken by the container ImFontAtlas (will delete memory itself). (default=true)")]
         public bool FontDataOwnedByAtlas;
@@ -60,6 +60,13 @@ namespace ImGui.Unity.Data.Font
                  "Brightening small fonts may be a good workaround to make them more readable. (default=1.0f)")]
         public float RasterizerMultiply;
 
+        [Tooltip("[LEGACY: this only makes sense when ImGuiBackendFlags_RendererHasTextures is not supported]" + 
+                 " DPI scale multiplier for rasterization. Not altering other font metrics:" +
+                 " makes it easy to swap between e.g. a 100% and a 400% fonts for a zooming display," +
+                 " or handle Retina screen. IMPORTANT: If you change this it is expected that you increase/decrease" +
+                 " font scale roughly to the inverse of this, otherwise quality may look lowered.")] 
+        public float RasterizerDensity;
+
         [Tooltip("Explicitly specify unicode codepoint of ellipsis character. " +
                  "When fonts are being merged first specified ellipsis will be used. (default=-1)")]
         public char EllipsisChar;
@@ -77,18 +84,14 @@ namespace ImGui.Unity.Data.Font
         public void ApplyTo(ImFontConfigPtr im)
         {
             im.FontDataOwnedByAtlas = FontDataOwnedByAtlas;
-            im.FontNo = FontNo;
             im.SizePixels = SizeInPixels;
-            im.OversampleH = OversampleH;
-            im.OversampleV = OversampleV;
             im.PixelSnapH = PixelSnapH;
-            im.GlyphExtraSpacing = GlyphExtraSpacing.ToSystem();
             im.GlyphOffset = GlyphOffset.ToSystem();
             im.GlyphMinAdvanceX = GlyphMinAdvanceX;
             im.GlyphMaxAdvanceX = GlyphMaxAdvanceX;
             im.MergeMode = MergeMode;
-            im.FontBuilderFlags = FontBuilderFlags;
             im.RasterizerMultiply = RasterizerMultiply;
+            im.RasterizerDensity = RasterizerDensity;
             im.EllipsisChar = EllipsisChar;
 
             // setting GlyphRanges requires allocating memory so it is not done here
@@ -104,13 +107,12 @@ namespace ImGui.Unity.Data.Font
             OversampleH = im.OversampleH;
             OversampleV = im.OversampleV;
             PixelSnapH = im.PixelSnapH;
-            GlyphExtraSpacing = im.GlyphExtraSpacing.ToUnity();
             GlyphOffset = im.GlyphOffset.ToUnity();
             GlyphMinAdvanceX = im.GlyphMinAdvanceX;
             GlyphMaxAdvanceX = im.GlyphMaxAdvanceX;
             MergeMode = im.MergeMode;
-            FontBuilderFlags = im.FontBuilderFlags;
             RasterizerMultiply = im.RasterizerMultiply;
+            RasterizerDensity = im.RasterizerDensity;
             EllipsisChar = (char)im.EllipsisChar;
 
             // no good way to set GlyphRanges, do manually
@@ -119,7 +121,7 @@ namespace ImGui.Unity.Data.Font
         public unsafe List<ushort> BuildRanges()
         {
             ImFontAtlas* atlas = null;
-            List<ushort> ranges = new List<ushort>();
+            var ranges = new List<ushort>();
 
             void AddRangePtr(ushort* r)
             {
@@ -132,41 +134,6 @@ namespace ImGui.Unity.Data.Font
             if ((GlyphRanges & ScriptGlyphRanges.Default) != 0)
             {
                 AddRangePtr(ImGuiNative.ImFontAtlas_GetGlyphRangesDefault(atlas));
-            }
-
-            if ((GlyphRanges & ScriptGlyphRanges.Cyrillic) != 0)
-            {
-                AddRangePtr(ImGuiNative.ImFontAtlas_GetGlyphRangesCyrillic(atlas));
-            }
-
-            if ((GlyphRanges & ScriptGlyphRanges.Japanese) != 0)
-            {
-                AddRangePtr(ImGuiNative.ImFontAtlas_GetGlyphRangesJapanese(atlas));
-            }
-
-            if ((GlyphRanges & ScriptGlyphRanges.Korean) != 0)
-            {
-                AddRangePtr(ImGuiNative.ImFontAtlas_GetGlyphRangesKorean(atlas));
-            }
-
-            if ((GlyphRanges & ScriptGlyphRanges.Thai) != 0)
-            {
-                AddRangePtr(ImGuiNative.ImFontAtlas_GetGlyphRangesThai(atlas));
-            }
-
-            if ((GlyphRanges & ScriptGlyphRanges.Vietnamese) != 0)
-            {
-                AddRangePtr(ImGuiNative.ImFontAtlas_GetGlyphRangesVietnamese(atlas));
-            }
-
-            if ((GlyphRanges & ScriptGlyphRanges.ChineseSimplified) != 0)
-            {
-                AddRangePtr(ImGuiNative.ImFontAtlas_GetGlyphRangesChineseSimplifiedCommon(atlas));
-            }
-
-            if ((GlyphRanges & ScriptGlyphRanges.ChineseFull) != 0)
-            {
-                AddRangePtr(ImGuiNative.ImFontAtlas_GetGlyphRangesChineseFull(atlas));
             }
 
             if ((GlyphRanges & ScriptGlyphRanges.Custom) != 0)

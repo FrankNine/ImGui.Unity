@@ -32,9 +32,6 @@ namespace ImGui.Unity.Data
         [Tooltip("When holding a key/button, rate at which it repeats, in seconds. (default=0.050f)")]
         public float KeyRepeatRate;
 
-        [Tooltip("Global scale all fonts. (default=1.0f)")]
-        public float FontGlobalScale;
-
         [Tooltip("Allow user scaling text of individual window with CTRL+Wheel. (default=false)")]
         public bool FontAllowUserScaling;
 
@@ -93,7 +90,6 @@ namespace ImGui.Unity.Data
             io.KeyRepeatDelay = KeyRepeatDelay;
             io.KeyRepeatRate = KeyRepeatRate;
 
-            io.FontGlobalScale = FontGlobalScale;
             io.FontAllowUserScaling = FontAllowUserScaling;
 
             io.DisplayFramebufferScale = DisplayFramebufferScale;
@@ -122,7 +118,6 @@ namespace ImGui.Unity.Data
             KeyRepeatDelay = io.KeyRepeatDelay;
             KeyRepeatRate = io.KeyRepeatRate;
 
-            FontGlobalScale = io.FontGlobalScale;
             FontAllowUserScaling = io.FontAllowUserScaling;
 
             DisplayFramebufferScale = io.DisplayFramebufferScale;

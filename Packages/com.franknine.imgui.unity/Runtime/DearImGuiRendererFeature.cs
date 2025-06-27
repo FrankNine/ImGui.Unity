@@ -37,7 +37,6 @@ namespace ImGui.Unity
             KeyRepeatDelay = 0.250f,
             KeyRepeatRate = 0.050f,
 
-            FontGlobalScale = 1.0f,
             FontAllowUserScaling = false,
 
             DisplayFramebufferScale = Vector2.One,
@@ -114,6 +113,7 @@ namespace ImGui.Unity
 
                 // Supports ImDrawCmd::VtxOffset to output large meshes while still using 16-bits indices.
                 io.BackendFlags |= ImGuiBackendFlags.RendererHasVtxOffset;
+                io.BackendFlags |= ImGuiBackendFlags.RendererHasTextures;
 
                 // C++ exceptions will crash the editor and may cause user to lose unsaved changes.
                 // Try to have some elegant recovery so that things don't just break.
@@ -122,8 +122,6 @@ namespace ImGui.Unity
                 io.DisplaySize = new Vector2(Screen.width, Screen.height);
                 
                 _textureManager = new TextureManager();
-                _textureManager.BuildFontAtlas(io, _fontAtlasConfiguration, _fontCustomInitializer);
-                _textureManager.Initialize(io);
                 
                 _initialConfiguration.ApplyTo(io);
                 _style?.ApplyTo(ImGuiNET.ImGui.GetStyle());
@@ -176,7 +174,6 @@ namespace ImGui.Unity
             
             ImGuiIOPtr io = ImGuiNET.ImGui.GetIO();
             
-            _textureManager.PrepareFrame(io);
             _inputSource.PrepareFrame(io);
             
             // Time.unscaledDeltaTime can be 0 in rare occasions. For example, when using the Frame Debugger.

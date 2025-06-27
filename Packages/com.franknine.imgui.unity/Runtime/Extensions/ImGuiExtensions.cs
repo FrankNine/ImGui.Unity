@@ -10,7 +10,7 @@ namespace ImGui.Unity.Extensions
 {
     public static unsafe class ImGuiExtensions
     {
-        private static readonly HashSet<IntPtr> _managedAllocations = new HashSet<IntPtr>();
+        private static readonly HashSet<IntPtr> _managedAllocations = new();
 
         internal static void SetBackendPlatformName(this ImGuiIOPtr io, string name)
         {

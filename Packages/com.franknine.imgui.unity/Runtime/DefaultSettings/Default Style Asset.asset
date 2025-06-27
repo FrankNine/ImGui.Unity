@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 447280f85130ab0438c59866dbb907eb, type: 3}
-  m_Name: Style Asset
+  m_Name: Default Style Asset
   m_EditorClassIdentifier: 
   Alpha: 1
   WindowPadding: {x: 8, y: 8}
