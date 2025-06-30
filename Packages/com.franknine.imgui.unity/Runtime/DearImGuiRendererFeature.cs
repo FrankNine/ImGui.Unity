@@ -10,57 +10,22 @@ using Unity.Collections;
 using Unity.Collections.LowLevel.Unsafe;
 
 using ImGuiNET;
-using ImGui.Unity.Assets;
-using ImGui.Unity.Data;
-using ImGui.Unity.Events;
+using ImGui.Unity.Input;
 using ImGui.Unity.Texture;
 using ImGui.Unity.Extensions;
-using ImGui.Unity.Input;
 
 namespace ImGui.Unity
 {
     public class DearImGuiRendererFeature : ScriptableRendererFeature
     {
-        [SerializeField] private Material _material;
         [SerializeField] private RenderPassEvent _renderPassEvent = RenderPassEvent.AfterRenderingPostProcessing;
-        [SerializeField] private FontInitializerEvent _fontCustomInitializer = new();
-        [SerializeField] private FontAtlasConfigAsset _fontAtlasConfiguration;
-        [SerializeField] private UIOConfig _initialConfiguration = new()
-        {
-            ImGuiConfig = ImGuiConfigFlags.NavEnableKeyboard | ImGuiConfigFlags.DockingEnable,
-
-            DoubleClickTime = 0.30f,
-            DoubleClickMaxDist = 6.0f,
-
-            DragThreshold = 6.0f,
-
-            KeyRepeatDelay = 0.250f,
-            KeyRepeatRate = 0.050f,
-
-            FontAllowUserScaling = false,
-
-            DisplayFramebufferScale = Vector2.One,
-
-            MouseDrawCursor = false,
-            TextCursorBlink = false,
-
-            ResizeFromEdges = true,
-            MoveFromTitleOnly = true,
-            ConfigMemoryCompactTimer = 1f,
-        };
-        [Header("Customization")]
-        [SerializeField] private StyleAsset _style;
         
-        [Header("Custom Shader Properties")]
-        [SerializeField] private string textureProperty = "_Texture";
-        
-        [SerializeField] private CursorShapesAsset _cursorShapes;
-        [Tooltip("Null value uses default imgui.ini file.")]
-        [SerializeField] private IniSettingsAsset _iniSettings;
+        [Header("Render Material Properties")]
+        [SerializeField] private Material _material;
+        [SerializeField] private string _textureProperty = "_Texture";
 
         [SerializeField] private InputSourceType _inputSourceType;
         
-
         private DearImGuiPass _dearImGuiPass;
         
         private Mesh _mesh;
@@ -122,11 +87,8 @@ namespace ImGui.Unity
                 io.DisplaySize = new Vector2(Screen.width, Screen.height);
                 
                 _textureManager = new TextureManager();
-                
-                _initialConfiguration.ApplyTo(io);
-                _style?.ApplyTo(ImGuiNET.ImGui.GetStyle());
 
-                IInputSource inputSource = InputUtility.Create(_inputSourceType, _cursorShapes, _iniSettings);
+                IInputSource inputSource = InputUtility.Create(_inputSourceType);
                 _inputSource?.Shutdown(io);
                 _inputSource = inputSource;
                 _inputSource?.Initialize(io);
@@ -137,7 +99,7 @@ namespace ImGui.Unity
                 Material = _material,
                 MaterialPropertyBlock = new MaterialPropertyBlock(),
                 TextureManager = _textureManager,
-                TextureID = Shader.PropertyToID(textureProperty),
+                TextureID = Shader.PropertyToID(_textureProperty),
                 Mesh = _mesh,
                 
                 renderPassEvent = _renderPassEvent
@@ -314,22 +276,6 @@ namespace ImGui.Unity
             {
                 var materialPath = Path.Combine(PACKAGE_PATH, "Runtime/Resources/Materials/DearImGui-Mesh.mat");
                 _material = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(materialPath);
-                UnityEditor.EditorUtility.SetDirty(this);
-            }
-            
-            if (!_fontAtlasConfiguration)
-            {
-                var fontAtlasConfigAssetPath 
-                    = Path.Combine(PACKAGE_PATH, "Runtime/DefaultSettings/Default Font Atlas Config Asset.asset");
-                _fontAtlasConfiguration 
-                    = UnityEditor.AssetDatabase.LoadAssetAtPath<FontAtlasConfigAsset>(fontAtlasConfigAssetPath);
-                UnityEditor.EditorUtility.SetDirty(this);
-            }
-
-            if (!_style)
-            {
-                var styleAssetPath = Path.Combine(PACKAGE_PATH, "Runtime/DefaultSettings/Default Style Asset.asset"); 
-                _style = UnityEditor.AssetDatabase.LoadAssetAtPath<StyleAsset>(styleAssetPath); 
                 UnityEditor.EditorUtility.SetDirty(this);
             }
         }

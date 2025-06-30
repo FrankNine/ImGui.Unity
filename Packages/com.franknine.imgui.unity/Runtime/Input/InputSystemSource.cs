@@ -6,8 +6,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
 using ImGuiNET;
-using ImGui.Unity.Data;
-using ImGui.Unity.Assets;
 using ImGui.Unity.Extensions;
 using ImGui.Unity.Utilities;
 
@@ -27,13 +25,9 @@ namespace ImGui.Unity.Input
     internal sealed class InputSystemSource : InputSourceBase
     {
         private readonly List<char> _textInput = new();
-
         private readonly List<KeyControl> _keyControls = new();
 
         private Keyboard _keyboard;
-
-        public InputSystemSource(CursorShapesAsset cursorShapes, IniSettingsAsset iniSettings)
-            : base(cursorShapes, iniSettings) { }
 
         private static void _UpdateMouse(ImGuiIOPtr io, Mouse mouse)
         {
@@ -248,28 +242,25 @@ namespace ImGui.Unity.Input
 
             _SetupKeyboard(Keyboard.current);
         }
-
-        public override void Shutdown(ImGuiIOPtr io)
-        {
-            base.Shutdown(io);
-            InputSystem.onDeviceChange -= OnDeviceChange;
-        }
-
+        
         public override void PrepareFrame(ImGuiIOPtr io)
         {
-            base.PrepareFrame(io);
-
             try
             {
                 _UpdateKeyboard(io, Keyboard.current);
                 _UpdateMouse(io, Mouse.current);
-                UpdateCursor(io, ImGuiNET.ImGui.GetMouseCursor());
                 _UpdateGamepad(io, Gamepad.current);
             }
             catch (Exception e)
             {
                 Debug.LogException(e);
             }
+        }
+        
+        public override void Shutdown(ImGuiIOPtr io)
+        {
+            base.Shutdown(io);
+            InputSystem.onDeviceChange -= OnDeviceChange;
         }
 #endregion
     }

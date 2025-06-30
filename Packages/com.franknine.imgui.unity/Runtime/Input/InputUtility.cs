@@ -1,7 +1,5 @@
 using System;
 
-using ImGui.Unity.Assets;
-
 namespace ImGui.Unity.Input
 {
     public enum InputSourceType
@@ -12,11 +10,11 @@ namespace ImGui.Unity.Input
 
     internal static class InputUtility
     {
-        internal static IInputSource Create(InputSourceType type, CursorShapesAsset cursors, IniSettingsAsset iniSettings) 
+        internal static IInputSource Create(InputSourceType type) 
             => type switch
             {
-                InputSourceType.InputManager => new InputManagerSource(cursors, iniSettings),
-                InputSourceType.InputSystem => new InputSystemSource(cursors, iniSettings),
+                InputSourceType.InputManager => new InputManagerSource(),
+                InputSourceType.InputSystem => new InputSystemSource(),
                 _ => throw new ArgumentOutOfRangeException()
             };
     }

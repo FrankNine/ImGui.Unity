@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
 
 using ImGuiNET;
-using ImGui.Unity.Data;
-using ImGui.Unity.Assets;
 using ImGui.Unity.Utilities;
 
 namespace ImGui.Unity.Input
@@ -24,16 +22,10 @@ namespace ImGui.Unity.Input
         private readonly Event _textInputEvent = new();
         private readonly KeyCode[] _keyCodes = (KeyCode[])System.Enum.GetValues(typeof(KeyCode));
 
-        public InputManagerSource(CursorShapesAsset cursorShapes, IniSettingsAsset iniSettings) :
-            base(cursorShapes, iniSettings) { }
-
         public override void PrepareFrame(ImGuiIOPtr io)
         {
-            base.PrepareFrame(io);
-
             _UpdateKeyboard(io);
             _UpdateMouse(io);
-            UpdateCursor(io, ImGuiNET.ImGui.GetMouseCursor());
         }
 
         private void _UpdateKeyboard(ImGuiIOPtr io)
