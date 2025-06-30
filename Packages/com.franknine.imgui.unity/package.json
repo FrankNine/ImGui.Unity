@@ -1,6 +1,6 @@
 {
     "name": "com.franknine.imgui.unity",
-    "version": "0.0.1",
+    "version": "1.92.0",
     "displayName": "ImGui.Unity",
     "description": "Dear ImGui for URP",
     "unity": "6000.0",
